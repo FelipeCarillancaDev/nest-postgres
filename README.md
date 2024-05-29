@@ -3,8 +3,9 @@
 </p>
 
 # TesloDB API
-
-1. Levantar la BD
-```
-docker-compose up -d
-```
+1. Clonar Proyecto
+2. Ejecutar ``npm install``
+3. Clonar el archivo ``.env.template`` y renombrarlo a ``.env``
+4. Cambiar las variables de entorno
+5. Levant la BD ``docker-compose up -d``
+6. Levantar ``npm start:dev``
