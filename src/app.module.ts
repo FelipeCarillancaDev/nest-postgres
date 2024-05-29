@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ProductsModule } from './products/products.module';
 import * as process from "node:process";
 
 
@@ -17,6 +18,7 @@ import * as process from "node:process";
       autoLoadEntities: true,
       synchronize: true,
     }),
+    ProductsModule,
   ],
   controllers: [],
   providers: [],
