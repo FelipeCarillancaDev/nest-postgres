@@ -8,7 +8,7 @@ export class Product {
   @Column('text', { unique: true, nullable: false })
   title: string;
 
-  @Column('numeric', { nullable: false })
+  @Column('float', { default: 0 })
   price: number;
 
   @Column('text', { nullable: true })
