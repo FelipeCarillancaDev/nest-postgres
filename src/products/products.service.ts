@@ -1,13 +1,20 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { validate as isUUID } from 'uuid';
 
 @Injectable()
 export class ProductsService {
-  private readonly logger = new Logger('ProductsService')
+  private readonly logger = new Logger('ProductsService');
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -23,20 +30,38 @@ export class ProductsService {
     }
   }
 
-  findAll() {
-    return this.productRepository.find();
+  async findAll({ limit = 10, offset = 0 }: PaginationDto) {
+    return this.productRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  //queryBuild consultas mas complejas
+  async findOne(term: string) {
+    let product: Product;
+
+    if (isUUID(term)) {
+      product = await this.productRepository.findOneBy({ id: term });
+    } else {
+      const queryBuild = this.productRepository.createQueryBuilder();
+      product = await queryBuild
+        .where('UPPER(title)=:title or slug=:slug', {
+          title: term.toUpperCase(),
+          slug: term.toLowerCase(),
+        })
+        .getOne();
+    }
+    return product;
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: string) {
-    return this.productRepository.delete(id);
+  async remove(id: string) {
+    const product = await this.findOne(id);
+    await this.productRepository.remove(product);
   }
 
   private handlerDBExceptions(error: any) {
@@ -44,6 +69,8 @@ export class ProductsService {
       throw new BadRequestException(error.detail);
     }
     this.logger.error(error);
-    throw new InternalServerErrorException('Unexpected error, check server logs');
+    throw new InternalServerErrorException(
+      'Unexpected error, check server logs',
+    );
   }
 }
