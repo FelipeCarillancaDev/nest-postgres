@@ -38,4 +38,9 @@ export class CreateProductDto {
 
   @IsIn(['men', 'women', 'kid', 'unisex']) // cada uno de los elementos debe cumplir con esta validacion()
   gender?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  tags?: string[];
 }
