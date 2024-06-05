@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -55,8 +56,21 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  //preload es una consulta mas rapida
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    const product: Product = await this.productRepository.preload({
+      id,
+      ...updateProductDto, //spread operator para clonar el objeto/esparcir elementos
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+    try {
+      await this.productRepository.save(product);
+      return product;
+    } catch (error) {
+      this.handlerDBExceptions(error);
+    }
   }
 
   async remove(id: string) {
