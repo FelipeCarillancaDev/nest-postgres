@@ -44,7 +44,7 @@ export class Product {
   @OneToMany(() => ProductImages, (productImages) => productImages.product, {
     cascade: true,
   })
-  images?: ProductImages;
+  images?: ProductImages[];
 
   @BeforeInsert()
   checkSlug() {

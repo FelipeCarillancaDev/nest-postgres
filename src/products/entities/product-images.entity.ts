@@ -9,6 +9,6 @@ export class ProductImages {
   @Column('text')
   url: string;
 
-  @ManyToOne(() => Product, (product) => product.images)
+  @ManyToOne(() => Product, (product: Product) => product.images)
   product: Product;
 }

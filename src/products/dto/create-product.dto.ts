@@ -1,7 +1,6 @@
 import {
   IsArray,
   IsIn,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -43,4 +42,9 @@ export class CreateProductDto {
   @IsOptional()
   @IsString({ each: true })
   tags?: string[];
+
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
+  images?: string[];
 }
