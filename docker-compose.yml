@@ -5,7 +5,7 @@ services:
     image: postgres:14.3
     restart: always
     ports:
-      - "5432:5432"  # Corrección del puerto
+      - "5435:5432"  # Corrección del puerto
     environment:
       POSTGRES_PASSWORD: ${BD_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}

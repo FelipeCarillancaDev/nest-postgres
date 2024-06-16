@@ -5,8 +5,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto, UpdateProductDto } from './dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from '../common/dto/pagination.dto';
@@ -40,10 +39,17 @@ export class ProductsService {
   }
 
   async findAll({ limit = 10, offset = 0 }: PaginationDto) {
-    return this.productRepository.find({
+    const products = await this.productRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        images: true,
+      },
     });
+    return products.map((products) => ({
+      ...products,
+      images: products.images.map((image) => image.url),
+    }));
   }
 
   //queryBuild consultas mas complejas
@@ -53,15 +59,24 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      const queryBuild = this.productRepository.createQueryBuilder();
+      const queryBuild = this.productRepository.createQueryBuilder('prod');
       product = await queryBuild
         .where('UPPER(title)=:title or slug=:slug', {
           title: term.toUpperCase(),
           slug: term.toLowerCase(),
         })
+        .leftJoinAndSelect('prod.images', 'prodImages')
         .getOne();
     }
     return product;
+  }
+
+  async findOnePlain(term: string) {
+    const { images = [], ...product } = await this.findOne(term);
+    return {
+      ...product,
+      images: images.map((image) => image.url),
+    };
   }
 
   //preload es una consulta mas rapida
