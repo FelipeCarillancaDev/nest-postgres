@@ -8,4 +8,5 @@
 3. Clonar el archivo ``.env.template`` y renombrarlo a ``.env``
 4. Cambiar las variables de entorno
 5. Levant la BD ``docker-compose up -d``
+6. Ejecutar Seed ``http://localhost:3000/api/seed``
 6. Levantar ``npm start:dev``
