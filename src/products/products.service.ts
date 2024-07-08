@@ -56,7 +56,7 @@ export class ProductsService {
   }
 
   //queryBuild consultas mas complejas
-  async findOne(term: string) {
+  async findOne(term: string): Promise<Product> {
     let product: Product;
 
     if (isUUID(term)) {
@@ -75,7 +75,7 @@ export class ProductsService {
     return product;
   }
 
-  async findOnePlain(term: string) {
+  async findOnePlain(term: string){
     const { images = [], ...product } = await this.findOne(term);
     return {
       ...product,
