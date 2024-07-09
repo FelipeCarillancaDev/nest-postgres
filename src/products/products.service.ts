@@ -1,14 +1,14 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { CreateProductDto, UpdateProductDto } from "./dto";
-import { DataSource, Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
-import { PaginationDto } from "../common/dto/pagination.dto";
-import { validate as isUUID } from "uuid";
-import { ProductImages, Product } from "./entities";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { CreateProductDto, UpdateProductDto } from './dto';
+import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { validate as isUUID } from 'uuid';
+import { ProductImages, Product } from './entities';
 
 @Injectable()
 export class ProductsService {
-    private readonly logger = new Logger("ProductsService");
+    private readonly logger = new Logger('ProductsService');
 
     constructor(
         @InjectRepository(Product)
@@ -55,13 +55,13 @@ export class ProductsService {
         if (isUUID(term)) {
             product = await this.productRepository.findOneBy({ id: term });
         } else {
-            const queryBuild = this.productRepository.createQueryBuilder("prod");
+            const queryBuild = this.productRepository.createQueryBuilder('prod');
             product = await queryBuild
-                .where("UPPER(title)=:title or slug=:slug", {
+                .where('UPPER(title)=:title or slug=:slug', {
                     title: term.toUpperCase(),
                     slug: term.toLowerCase(),
                 })
-                .leftJoinAndSelect("prod.images", "prodImages")
+                .leftJoinAndSelect('prod.images', 'prodImages')
                 .getOne();
         }
         if (!product) throw new NotFoundException(`Product with ${term} not found`);
@@ -115,15 +115,15 @@ export class ProductsService {
     }
 
     private handlerDBExceptions(error: any) {
-        if (error.code === "23505") {
+        if (error.code === '23505') {
             throw new BadRequestException(error.detail);
         }
         this.logger.error(error);
-        throw new InternalServerErrorException("Unexpected error, check server logs");
+        throw new InternalServerErrorException('Unexpected error, check server logs');
     }
 
     async deleteAllProducts() {
-        const query = this.productRepository.createQueryBuilder("product");
+        const query = this.productRepository.createQueryBuilder('product');
         try {
             return await query.delete().where({}).execute();
         } catch (error) {
