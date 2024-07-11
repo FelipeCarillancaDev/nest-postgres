@@ -4,8 +4,8 @@ import { SeedController } from './seed.controller';
 import { ProductsModule } from '../products/products.module';
 
 @Module({
-    controllers: [SeedController],
-    providers: [SeedService],
-    imports: [ProductsModule],
+  controllers: [SeedController],
+  providers: [SeedService],
+  imports: [ProductsModule],
 })
 export class SeedModule {}

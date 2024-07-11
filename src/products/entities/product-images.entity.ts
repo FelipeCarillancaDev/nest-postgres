@@ -3,14 +3,14 @@ import { Product } from './product.entity';
 
 @Entity({ name: 'product_images' })
 export class ProductImages {
-    @PrimaryGeneratedColumn()
-    id: string;
+  @PrimaryGeneratedColumn()
+  id: string;
 
-    @Column('text')
-    url: string;
+  @Column('text')
+  url: string;
 
-    @ManyToOne(() => Product, (product: Product) => product.images, {
-        onDelete: 'CASCADE',
-    })
-    product: Product;
+  @ManyToOne(() => Product, (product: Product) => product.images, {
+    onDelete: 'CASCADE',
+  })
+  product: Product;
 }
