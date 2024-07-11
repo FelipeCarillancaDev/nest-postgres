@@ -21,7 +21,8 @@ export class FilesController {
     @Post('product')
     @UseInterceptors(
         FileInterceptor('file', {
-            fileFilter: FileFilter, storage: diskStorage({
+            fileFilter: FileFilter,
+            storage: diskStorage({
                 destination: './static/products',
                 filename: FileNamer,
             }),
